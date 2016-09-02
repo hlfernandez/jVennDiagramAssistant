@@ -6,12 +6,12 @@ import static es.uvigo.ei.sing.vda.gui.UISettings.BG_COLOR;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,6 +44,12 @@ public class VennDiagramAssistant extends JPanel {
 	public final static ImageIcon ICON_R 	= getResource("icons/r.png");
 	public final static ImageIcon ICON_SAVE = getResource("icons/save.png");
 	
+	private static final VennDiagramDesign DEFAULT_DESIGN = 
+		new VennDiagramDesign(Arrays.asList(new NamedRSet[]{
+			new NamedRSet<String>("Set 1", R_COLORS[0])	
+		}));
+	
+	private VennDiagramDesign design;
 	private JPanel northPane;
 	private JSplitPane centerPane;
 	private JPanel southPane;
@@ -56,7 +62,13 @@ public class VennDiagramAssistant extends JPanel {
 	private JComboBox<VennDiagramCreator> librarySelectionCmb;
 	private JPanel librarySelectionPanel;
 
+
 	public VennDiagramAssistant() {
+		this(DEFAULT_DESIGN);
+	}
+	
+	public VennDiagramAssistant(VennDiagramDesign design) {
+		this.design = design;
 		this.initComponent();
 	}
 
@@ -163,11 +175,18 @@ public class VennDiagramAssistant extends JPanel {
 			this.tabbedPane = new JTabbedPane();
 			this.centerPane.setLeftComponent(this.tabbedPane);
 			this.centerPane.setRightComponent(this.getSouthPane());
-			addSet();
+			this.addDesign();
 		}
 		return this.centerPane;
 	}
 	
+	private void addDesign() {
+		this.design.getSets().forEach(s -> {
+			SetInput component = getSetInputComponent(s);
+			addSetInputComponent(s.getName(), component);
+		});
+	}
+
 	private Component getSouthPane() {
 		if(this.southPane == null) {
 			this.southPane = new JPanel(new BorderLayout());
@@ -183,14 +202,25 @@ public class VennDiagramAssistant extends JPanel {
 	private void addSet() {
 		String nextSetName = getNextSetName();
 		String nextSetColor = R_COLORS[
-		     (this.tabbedPane.getTabCount() + 1) % R_COLORS.length];
-		SetInput component = new SetInput(nextSetName, nextSetColor);
-		component.onComponentNameChanged(() -> {
-			componentNameChanged(component);
-		});
+		    (this.tabbedPane.getTabCount() + 1) % R_COLORS.length];
+		SetInput component = getSetInputComponent(
+			new NamedRSet<String>(nextSetName, nextSetColor)
+		);
+		addSetInputComponent(nextSetName, component);
+	}
+
+	private void addSetInputComponent(String nextSetName, SetInput component) {
 		this.tabbedPane.addTab(nextSetName, component);
 		this.tabbedPane.setSelectedComponent(component);
 		this.inputSets.add(component);
+	}
+
+	private SetInput getSetInputComponent(NamedRSet<String> set) {
+		SetInput component = new SetInput(set);
+		component.onComponentNameChanged(() -> {
+			componentNameChanged(component);
+		});
+		return component;
 	}
 
 	private void componentNameChanged(SetInput component) {

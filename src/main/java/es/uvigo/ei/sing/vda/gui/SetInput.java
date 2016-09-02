@@ -23,16 +23,15 @@ import es.uvigo.ei.sing.vda.core.entities.NamedRSet;
 
 public class SetInput extends JPanel {
 	private static final long serialVersionUID = 1L;
-	private String name;
+	
+	private NamedRSet<String> set;
 	private JTextField nameTF;
 	private JTextArea elementsTA;
 	private Runnable onComponentNameChanged;
 	private JComboBox<String> colorCombo;
-	private String color;
 	
-	public SetInput(String name, String color) {
-		this.name = name;
-		this.color = color;
+	public SetInput(NamedRSet<String> set) {
+		this.set = set;
 		this.initComponent();
 	}
 	
@@ -45,6 +44,9 @@ public class SetInput extends JPanel {
 		this.setBackground(BG_COLOR);
 		
 		elementsTA = new JTextArea();
+		this.set.forEach(s -> {
+			elementsTA.append(s + "\n");
+		});
 		
 		this.add(getNorthPanel(), BorderLayout.NORTH);
 		this.add(elementsTA, BorderLayout.CENTER);
@@ -54,7 +56,7 @@ public class SetInput extends JPanel {
 		JPanel northPanel = new JPanel(new BorderLayout());
 		northPanel.setOpaque(false);
 		
-		nameTF = new JTextField(this.name);
+		nameTF = new JTextField(this.set.getName());
 		nameTF.getDocument().addDocumentListener(new DocumentListener() {
 			
 			@Override
@@ -74,7 +76,7 @@ public class SetInput extends JPanel {
 		});
 		
 		colorCombo = new JComboBox<String>(R_COLORS);
-		colorCombo.setSelectedItem(color);
+		colorCombo.setSelectedItem(this.set.getRSetColor());
 		JPanel colorPanel = new JPanel(new BorderLayout());
 		colorPanel.setOpaque(false);
 		colorPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
