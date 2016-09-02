@@ -5,7 +5,7 @@ A Java GUI library to allow users obtaining R code snippets to create venn diagr
 
 By executing the obtained R code, the following venn diagram is generated based on the input sets introduced:
 
-![Venn Diagram](https://raw.githubusercontent.com/hlfernandez/jVennDiagramAssistant/master/screenshots/venn-diagram.tiff)
+![Venn Diagram](https://raw.githubusercontent.com/hlfernandez/jVennDiagramAssistant/master/screenshots/venn-diagram.png)
 
 ## Supported R libraries
 `jVennDiagramAssistant` allows the creation of venn diagrams with the following libraries:
