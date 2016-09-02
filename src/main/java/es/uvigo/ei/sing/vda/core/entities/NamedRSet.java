@@ -1,10 +1,11 @@
 package es.uvigo.ei.sing.vda.core.entities;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-public class NamedRSet<E> extends HashSet<E>{
+public class NamedRSet<E> extends HashSet<E> implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private static final Collector<CharSequence, ?, String> JOINING = 
@@ -42,5 +43,20 @@ public class NamedRSet<E> extends HashSet<E>{
 	
 	public String getRSetColor() {
 		return this.color;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		}
+		if(!(o instanceof NamedRSet)) {
+			return false;
+		}
+		NamedRSet<?> other = ((NamedRSet<?>) o);
+		return 
+				this.name.equals(other.name) &&
+				this.color.equals(other.color) &&
+				super.equals(o);
 	}
 }
