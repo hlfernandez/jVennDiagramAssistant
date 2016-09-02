@@ -23,13 +23,19 @@ public class RLibraryVennDiagramCreator implements VennDiagramCreator {
 			.append(")")
 			.append(",\n\tfilename=\"venn-diagram.tiff\"")
 			.append(",\n\tfill = ")
-			.append(RColors.colorList(sets.size()))
+			.append(RColors.colorList(getSetsRColors(sets)))
 			.append("\n)");
 		return sb.toString();
 	}
 
-	private Stream<String> getSetsRNames(List<NamedRSet<String>> sets) {
+	private static Stream<String> getSetsRNames(List<NamedRSet<String>> sets) {
 		return sets.stream().map(NamedRSet::getRSetName);
+	}
+	
+	private static List<String> getSetsRColors(List<NamedRSet<String>> sets) {
+		return 	sets.stream()
+				.map(NamedRSet::getRSetColor)
+				.collect(Collectors.toList());
 	}
 
 	@Override

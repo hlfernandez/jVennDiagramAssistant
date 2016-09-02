@@ -11,9 +11,11 @@ public class NamedRSet<E> extends HashSet<E>{
 		Collectors.joining("\",\"", "\"", "\"");
 	
 	private String name;
+	private String color;
 	
-	public NamedRSet(String name) {
+	public NamedRSet(String name, String color) {
 		this.name = name;
+		this.color = color;
 	}
 
 	public String getName() {
@@ -36,5 +38,9 @@ public class NamedRSet<E> extends HashSet<E>{
 
 	public String getRSetName() {
 		return this.name.replaceAll(" ", ".");
+	}
+	
+	public String getRSetColor() {
+		return this.color;
 	}
 }

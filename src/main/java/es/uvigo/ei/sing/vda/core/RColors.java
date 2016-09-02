@@ -1,6 +1,7 @@
 package es.uvigo.ei.sing.vda.core;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class RColors {
@@ -17,7 +18,10 @@ public class RColors {
 	};
 
 	public static String colorList(int size) {
-		return 	Arrays.asList(R_COLORS).subList(0, size)
-				.stream().collect(Collectors.joining("\", \"", "c(\"", "\")"));
+		return 	colorList(Arrays.asList(R_COLORS).subList(0, size));
+	}
+	
+	public static String colorList(List<String> colors) {
+		return colors.stream().collect(Collectors.joining("\", \"", "c(\"", "\")"));
 	}
 }

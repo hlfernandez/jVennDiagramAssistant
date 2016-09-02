@@ -1,5 +1,6 @@
 package es.uvigo.ei.sing.vda.gui;
 
+import static es.uvigo.ei.sing.vda.core.RColors.R_COLORS;
 import static es.uvigo.ei.sing.vda.gui.UISettings.BG_COLOR;
 
 import java.awt.BorderLayout;
@@ -69,6 +70,7 @@ public class VennDiagramAssistant extends JPanel {
 		if(this.northPane == null) {
 			this.northPane = new JPanel();
 			this.northPane.setBackground(BG_COLOR);
+			this.northPane.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 			BoxLayout layout = new BoxLayout(this.northPane, BoxLayout.X_AXIS);
 			this.northPane.setLayout(layout);
 			JButton addSet = new JButton(new AbstractAction("Add set") {
@@ -156,7 +158,9 @@ public class VennDiagramAssistant extends JPanel {
 
 	private void addSet() {
 		String nextSetName = getNextSetName();
-		SetInput component = new SetInput(nextSetName);
+		String nextSetColor = R_COLORS[
+		     (this.tabbedPane.getTabCount() + 1) % R_COLORS.length];
+		SetInput component = new SetInput(nextSetName, nextSetColor);
 		component.onComponentNameChanged(() -> {
 			componentNameChanged(component);
 		});

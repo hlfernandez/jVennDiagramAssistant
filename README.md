@@ -11,6 +11,3 @@ By executing the obtained R code, the following venn diagram is generated based 
 `jVennDiagramAssistant` allows the creation of venn diagrams with the following libraries:
 - [`gplots`](https://cran.r-project.org/web/packages/gplots/index.html).
 - `VennDiagram`.
-
-## TODOs
-- Allow color customization in `SeInput` component.
