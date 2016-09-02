@@ -10,6 +10,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,9 +20,12 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -28,10 +33,17 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import es.uvigo.ei.sing.vda.core.VennDiagramCreator;
+import es.uvigo.ei.sing.vda.core.VennDiagramDesign;
 import es.uvigo.ei.sing.vda.core.entities.NamedRSet;
+import es.uvigo.ei.sing.vda.core.io.SerializationVennDiagramDesignWriter;
 
 public class VennDiagramAssistant extends JPanel {
 	private static final long serialVersionUID = 1L;
+	
+	public final static ImageIcon ICON_ADD 	= getResource("icons/add.png");
+	public final static ImageIcon ICON_R 	= getResource("icons/r.png");
+	public final static ImageIcon ICON_SAVE = getResource("icons/save.png");
+	
 	private JPanel northPane;
 	private JSplitPane centerPane;
 	private JPanel southPane;
@@ -73,40 +85,51 @@ public class VennDiagramAssistant extends JPanel {
 			this.northPane.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 			BoxLayout layout = new BoxLayout(this.northPane, BoxLayout.X_AXIS);
 			this.northPane.setLayout(layout);
-			JButton addSet = new JButton(new AbstractAction("Add set") {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					addSet();
-				}
-			});
+			JButton addSet = new JButton(
+				new AbstractAction("", ICON_ADD) {
+					private static final long serialVersionUID = 1L;
+		
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						addSet();
+					}
+				});
+			JButton generateRCode = new JButton(
+				new AbstractAction("", ICON_R) {
+					private static final long serialVersionUID = 1L;
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						generateRCode();
+					}
+				});
 			
-
-			JButton generateRCode = new JButton(new AbstractAction("Generate R code") {
-				private static final long serialVersionUID = 1L;
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					generateRCode();
-				}
-
-			});
+			JButton saveButton = new JButton(
+				new AbstractAction("", ICON_SAVE) {
+					private static final long serialVersionUID = 1L;
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						saveDesign();
+					}
+				});
 			
-			this.northPane.add(addSet);
-			this.northPane.add(Box.createHorizontalGlue());
 			this.northPane.add(getLibrarySelectionPanel());
 			this.northPane.add(Box.createHorizontalGlue());
+			this.northPane.add(addSet);
 			this.northPane.add(generateRCode);
+			this.northPane.add(saveButton);
 		}
 		return this.northPane;
 	}
 	
 	private Component getLibrarySelectionPanel() {
 		if(this.librarySelectionPanel == null) {
-			this.librarySelectionPanel = new JPanel(new FlowLayout());
+			this.librarySelectionPanel = new JPanel();
+			BoxLayout layout = new BoxLayout(this.librarySelectionPanel, BoxLayout.X_AXIS);
+			this.librarySelectionPanel.setLayout(layout);
 			this.librarySelectionPanel.setOpaque(false);
-			this.librarySelectionPanel.add(new JLabel("R library"));
+			this.librarySelectionPanel.add(new JLabel("R library: "));
 			this.librarySelectionPanel.add(getLibrarySelectionComponent());
 		}
 		return this.librarySelectionPanel;
@@ -116,6 +139,7 @@ public class VennDiagramAssistant extends JPanel {
 		if(this.librarySelectionCmb == null) {
 			this.librarySelectionCmb = new JComboBox<VennDiagramCreator>(
 				VennDiagramCreator.getImplementations());
+			this.librarySelectionCmb.setMaximumSize(new Dimension(200, 50));
 			this.librarySelectionCmb.addItemListener(e -> {
 				 if (e.getStateChange() == ItemEvent.SELECTED) {
 					 libraryChanged();
@@ -180,9 +204,41 @@ public class VennDiagramAssistant extends JPanel {
 	}
 
 	private void generateRCode() {
-		List<NamedRSet<String>> collect = inputSets.stream()
-			.map(SetInput::getNamedRSet)
-			.collect(Collectors.toList());
-		this.codeTA.setText(this.vennDiagramCreator.getRCode(collect));
+		this.codeTA.setText(this.vennDiagramCreator.getRCode(getSets()));
+	}
+	
+	private List<NamedRSet<String>> getSets() {
+		return 	inputSets.stream()
+				.map(SetInput::getNamedRSet)
+				.collect(Collectors.toList());
+	}
+
+	private void saveDesign() {
+		JFileChooser jfc = new JFileChooser();
+		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		int result = jfc.showSaveDialog(this);
+		if (result == JFileChooser.APPROVE_OPTION) {
+			File selectedFile = jfc.getSelectedFile();
+			
+			SerializationVennDiagramDesignWriter writer = 
+				new SerializationVennDiagramDesignWriter();
+			try {
+				writer.write(getVennDiagramDesign(), selectedFile);
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(this,
+					"An error occurred when saving to " + 
+					selectedFile.getAbsolutePath(), 
+					"Save error",
+					JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	}
+
+	private VennDiagramDesign getVennDiagramDesign() {
+		return new VennDiagramDesign(getSets());
+	}
+	
+	private static final ImageIcon getResource(String resource) {
+		return new ImageIcon(VennDiagramAssistant.class.getResource(resource));
 	}
 }
