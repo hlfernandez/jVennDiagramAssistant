@@ -44,7 +44,7 @@ public class VennDiagramAssistant extends JPanel {
 	public final static ImageIcon ICON_R 	= getResource("icons/r.png");
 	public final static ImageIcon ICON_SAVE = getResource("icons/save.png");
 	
-	private static final VennDiagramDesign DEFAULT_DESIGN = 
+	public static final VennDiagramDesign DEFAULT_DESIGN = 
 		new VennDiagramDesign(Arrays.asList(new NamedRSet[]{
 			new NamedRSet<String>("Set 1", R_COLORS[0])	
 		}));
@@ -192,6 +192,7 @@ public class VennDiagramAssistant extends JPanel {
 			this.southPane = new JPanel(new BorderLayout());
 			this.southPane.setMinimumSize(new Dimension(100, 200));
 			this.codeTA = new JTextArea();
+			this.codeTA.setLineWrap(true);
 			this.codeTA.setBorder(BorderFactory.createTitledBorder("R code"));
 			this.codeTA.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13));
 			this.southPane.add(codeTA, BorderLayout.CENTER);
