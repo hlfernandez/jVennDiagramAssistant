@@ -36,6 +36,7 @@ import es.uvigo.ei.sing.vda.core.VennDiagramCreator;
 import es.uvigo.ei.sing.vda.core.VennDiagramDesign;
 import es.uvigo.ei.sing.vda.core.entities.NamedRSet;
 import es.uvigo.ei.sing.vda.core.io.SerializationVennDiagramDesignWriter;
+import es.uvigo.ei.sing.vda.gui.components.ButtonTabComponent;
 
 public class VennDiagramAssistant extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -172,12 +173,33 @@ public class VennDiagramAssistant extends JPanel {
 			this.centerPane.setBackground(BG_COLOR);
 			this.centerPane.setOneTouchExpandable(true);
 			this.centerPane.setResizeWeight(0.5);
-			this.tabbedPane = new JTabbedPane();
+			this.tabbedPane = new JTabbedPane() {
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+				public void addTab(String title, Component component) {
+					super.addTab(title, component);
+					addCloseButton(component);
+				}
+
+				private void addCloseButton(Component component) {
+					super.setTabComponentAt(
+							super.indexOfComponent(component), 
+							new ButtonTabComponent(this, () -> {
+								componentRemoved(component);
+							})
+					);
+				}
+			};
 			this.centerPane.setLeftComponent(this.tabbedPane);
 			this.centerPane.setRightComponent(this.getSouthPane());
 			this.addDesign();
 		}
 		return this.centerPane;
+	}
+	
+	private void componentRemoved(Component component) {
+		this.inputSets.remove(component);
 	}
 	
 	private void addDesign() {
@@ -231,7 +253,19 @@ public class VennDiagramAssistant extends JPanel {
 	}
 	
 	private String getNextSetName() {
-		return "Set " + (this.tabbedPane.getTabCount() + 1);
+		String nextSetName = "";
+		int count = 1;
+		do {
+			nextSetName = "Set " + (this.tabbedPane.getTabCount() + count++);
+		} while (!isAvailableSetName(nextSetName));
+		return nextSetName;
+	}
+
+	private boolean isAvailableSetName(String setName) {
+		return 	!getSets().stream()
+				.map(NamedRSet::getName)
+				.filter( n -> n.equals(setName))
+				.findAny().isPresent();
 	}
 
 	private void generateRCode() {
