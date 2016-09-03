@@ -225,7 +225,7 @@ public class VennDiagramAssistant extends JPanel {
 	private void addSet() {
 		String nextSetName = getNextSetName();
 		String nextSetColor = R_COLORS[
-		    (this.tabbedPane.getTabCount() + 1) % R_COLORS.length];
+		    (this.tabbedPane.getTabCount()) % R_COLORS.length];
 		SetInput component = getSetInputComponent(
 			new NamedRSet<String>(nextSetName, nextSetColor)
 		);
