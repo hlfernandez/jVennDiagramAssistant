@@ -10,4 +10,4 @@ By executing the obtained R code, the following venn diagram is generated based 
 ## Supported R libraries
 `jVennDiagramAssistant` allows the creation of venn diagrams with the following libraries:
 - [`gplots`](https://cran.r-project.org/web/packages/gplots/index.html).
-- `VennDiagram`.
+- [`VennDiagram`](https://cran.r-project.org/web/packages/VennDiagram/index.html).

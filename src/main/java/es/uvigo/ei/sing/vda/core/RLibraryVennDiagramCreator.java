@@ -18,10 +18,11 @@ public class RLibraryVennDiagramCreator implements VennDiagramCreator {
 		sets.forEach(sI -> sb.append(sI.getRCode() + "\n"));
 		sb
 			.append("\nlibrary(VennDiagram)\n\n")
+			.append("filename <- \"venn-diagram.tiff\"\n\n")
 			.append("venn.diagram(\n\tx=list(")
 			.append(getSetsRNames(sets).map(s -> s.concat("=" + s)).collect(JOINING))
 			.append(")")
-			.append(",\n\tfilename=\"venn-diagram.tiff\"")
+			.append(",\n\tfilename=filename")
 			.append(",\n\tfill = ")
 			.append(RColors.colorList(getSetsRColors(sets)))
 			.append("\n)");
