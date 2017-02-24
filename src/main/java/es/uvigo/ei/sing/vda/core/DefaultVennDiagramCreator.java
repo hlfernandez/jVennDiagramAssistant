@@ -20,7 +20,7 @@ public class DefaultVennDiagramCreator implements VennDiagramCreator {
 			.append("\nlibrary(gplots)\n\n")
 			.append("venn(list(")
 			.append(getSetRNames(sets).map(s -> s.concat("=" + s)).collect(JOINING))
-			.append("))");
+			.append("))\n");
 		return sb.toString();
 	}
 

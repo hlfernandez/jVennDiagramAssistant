@@ -25,7 +25,7 @@ public class RLibraryVennDiagramCreator implements VennDiagramCreator {
 			.append(",\n\tfilename=filename")
 			.append(",\n\tfill = ")
 			.append(RColors.colorList(getSetsRColors(sets)))
-			.append("\n)");
+			.append("\n)\n");
 		return sb.toString();
 	}
 
