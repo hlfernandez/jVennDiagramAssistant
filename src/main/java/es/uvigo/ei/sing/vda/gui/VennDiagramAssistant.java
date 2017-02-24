@@ -7,13 +7,18 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.swing.AbstractAction;
@@ -23,6 +28,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -33,6 +39,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
+import es.uvigo.ei.sing.hlfernandez.filechooser.JFileChooserPanel;
+import es.uvigo.ei.sing.hlfernandez.filechooser.JFileChooserPanel.Mode;
+import es.uvigo.ei.sing.hlfernandez.filechooser.JFileChooserPanel.SelectionMode;
+import es.uvigo.ei.sing.hlfernandez.ui.icons.Icons;
 import es.uvigo.ei.sing.vda.core.VennDiagramCreator;
 import es.uvigo.ei.sing.vda.core.VennDiagramDesign;
 import es.uvigo.ei.sing.vda.core.entities.NamedRSet;
@@ -63,6 +73,9 @@ public class VennDiagramAssistant extends JPanel {
 	private JTabbedPane tabbedPane;
 	private JComboBox<VennDiagramCreator> librarySelectionCmb;
 	private JPanel librarySelectionPanel;
+	private JFileChooserPanel fileChooserPanel;
+	private JFileChooser fileChooser =
+		new JFileChooser(System.getProperty("user.home"));
 
 	public VennDiagramAssistant() {
 		this(DEFAULT_DESIGN);
@@ -128,6 +141,8 @@ public class VennDiagramAssistant extends JPanel {
 				});
 			
 			this.northPane.add(getLibrarySelectionPanel());
+			this.northPane.add(Box.createHorizontalStrut(20));
+			this.northPane.add(getFileChooserSelectionPanel());
 			this.northPane.add(Box.createHorizontalGlue());
 			this.northPane.add(addSet);
 			this.northPane.add(generateRCode);
@@ -135,7 +150,7 @@ public class VennDiagramAssistant extends JPanel {
 		}
 		return this.northPane;
 	}
-	
+
 	private Component getLibrarySelectionPanel() {
 		if(this.librarySelectionPanel == null) {
 			this.librarySelectionPanel = new JPanel();
@@ -165,6 +180,21 @@ public class VennDiagramAssistant extends JPanel {
 	private void libraryChanged() {
 		this.vennDiagramCreator = 
 			(VennDiagramCreator) this.librarySelectionCmb.getSelectedItem();
+	}
+
+	private JComponent getFileChooserSelectionPanel() {
+		if(this.fileChooserPanel == null) {
+			this.fileChooserPanel = new JFileChooserPanel(
+				Mode.SAVE, this.fileChooser, Icons.ICON_LOOKUP_16, 
+				"Image file ", "tiff", SelectionMode.FILES
+			);
+			this.fileChooserPanel.setMaximumSize(new Dimension(250, 50));
+			this.fileChooserPanel.setBackground(BG_COLOR);
+			this.fileChooserPanel.setSelectedFile(
+				new File(System.getProperty("user.home"), "venn-diagram.tiff")
+			);
+		}
+		return this.fileChooserPanel;
 	}
 
 	private Component getCenterPane() {
@@ -269,9 +299,29 @@ public class VennDiagramAssistant extends JPanel {
 	}
 
 	private void generateRCode() {
-		this.codeTA.setText(this.vennDiagramCreator.getRCode(getSets()));
+		this.codeTA.setText(this.vennDiagramCreator.getRCode(getSets(), getParameters()));
+		this.copyCodeToClipboard();
 	}
 	
+	private void copyCodeToClipboard() {
+		StringSelection selection = new StringSelection(this.codeTA.getText());
+		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		clipboard.setContents(selection, selection);
+	}
+
+	private Map<String, String> getParameters() {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put(
+			VennDiagramCreator.OUTPUT_FILE, 
+			filePathToR(this.fileChooserPanel.getSelectedFile().getAbsolutePath())
+		);
+		return parameters;
+	}
+
+	private String filePathToR(String absolutePath) {
+		return absolutePath.replace('\\', '/');
+	}
+
 	private List<NamedRSet<String>> getSets() {
 		return 	inputSets.stream()
 				.map(SetInput::getNamedRSet)
