@@ -27,6 +27,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -46,9 +47,9 @@ public class VennDiagramAssistant extends JPanel {
 	public final static ImageIcon ICON_SAVE = getResource("icons/save.png");
 	
 	public static final VennDiagramDesign DEFAULT_DESIGN = 
-		new VennDiagramDesign(Arrays.asList(new NamedRSet[]{
+		new VennDiagramDesign(Arrays.asList(
 			new NamedRSet<String>("Set 1", R_COLORS[0])	
-		}));
+		));
 	
 	private VennDiagramDesign design;
 	private JPanel northPane;
@@ -62,7 +63,6 @@ public class VennDiagramAssistant extends JPanel {
 	private JTabbedPane tabbedPane;
 	private JComboBox<VennDiagramCreator> librarySelectionCmb;
 	private JPanel librarySelectionPanel;
-
 
 	public VennDiagramAssistant() {
 		this(DEFAULT_DESIGN);
@@ -217,7 +217,7 @@ public class VennDiagramAssistant extends JPanel {
 			this.codeTA.setLineWrap(true);
 			this.codeTA.setBorder(BorderFactory.createTitledBorder("R code"));
 			this.codeTA.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13));
-			this.southPane.add(codeTA, BorderLayout.CENTER);
+			this.southPane.add(new JScrollPane(codeTA), BorderLayout.CENTER);
 		}
 		return this.southPane;
 	}

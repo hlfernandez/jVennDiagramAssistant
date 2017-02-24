@@ -13,6 +13,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -49,7 +50,7 @@ public class SetInput extends JPanel {
 		});
 		
 		this.add(getNorthPanel(), BorderLayout.NORTH);
-		this.add(elementsTA, BorderLayout.CENTER);
+		this.add(new JScrollPane(elementsTA), BorderLayout.CENTER);
 	}
 
 	private Component getNorthPanel() {
