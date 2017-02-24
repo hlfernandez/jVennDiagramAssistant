@@ -1,11 +1,11 @@
 package es.uvigo.ei.sing.vda.core;
 
 import static es.uvigo.ei.sing.vda.core.RColors.R_COLORS;
-import static org.junit.Assert.*;
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -17,10 +17,8 @@ import es.uvigo.ei.sing.vda.core.io.VennDiagramDesignWriter;
 
 public class VennDiagramDesignSerializationTest {
 
-	private static final VennDiagramDesign VDD = new VennDiagramDesign(
-		Arrays.asList(new NamedRSet[]{
-			new NamedRSet<String>("A", R_COLORS[0])	
-		})
+	private static final VennDiagramDesign VDD = new VennDiagramDesign(asList(
+		new NamedRSet<String>("A", R_COLORS[0]))
 	);
 	
 	static {
