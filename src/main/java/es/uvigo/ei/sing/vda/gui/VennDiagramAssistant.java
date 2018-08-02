@@ -39,10 +39,11 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
-import es.uvigo.ei.sing.hlfernandez.filechooser.JFileChooserPanel;
-import es.uvigo.ei.sing.hlfernandez.filechooser.JFileChooserPanel.Mode;
-import es.uvigo.ei.sing.hlfernandez.filechooser.JFileChooserPanel.SelectionMode;
-import es.uvigo.ei.sing.hlfernandez.ui.icons.Icons;
+import org.sing_group.gc4s.input.filechooser.JFileChooserPanel;
+import org.sing_group.gc4s.input.filechooser.Mode;
+import org.sing_group.gc4s.input.filechooser.SelectionMode;
+import org.sing_group.gc4s.ui.icons.Icons;
+
 import es.uvigo.ei.sing.vda.core.VennDiagramCreator;
 import es.uvigo.ei.sing.vda.core.VennDiagramDesign;
 import es.uvigo.ei.sing.vda.core.entities.NamedRSet;

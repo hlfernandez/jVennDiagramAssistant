@@ -3,7 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>es.uvigo.ei.sing</groupId>
 	<artifactId>venn-diagram-assistant</artifactId>
-	<version>1.1.0</version>
+	<version>1.1.1</version>
+
+	<properties>
+		<!-- General -->
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
 	<distributionManagement>
 		<repository>
@@ -27,21 +34,6 @@
 		</repository>
 	</repositories>
 
-	<build>
-		<plugins>
-			<!-- Java version -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -50,9 +42,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			  	<groupId>es.uvigo.ei.sing.hlfernandez</groupId>
-  				<artifactId>GC4S</artifactId>
-				<version>0.5.0</version>
+			<groupId>org.sing_group</groupId>
+			<artifactId>gc4s</artifactId>
+			<version>1.2.0</version>
 		</dependency>
 	</dependencies>
 </project>
